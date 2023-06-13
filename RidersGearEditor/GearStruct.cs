@@ -1,4 +1,10 @@
 using System.Collections;
+using Byte = RidersGearEditor.Types.Byte;
+using SByte = RidersGearEditor.Types.SByte;
+using Float = RidersGearEditor.Types.Float;
+using UInt32 = RidersGearEditor.Types.UInt32;
+using Int32 = RidersGearEditor.Types.Int32;
+using RidersGearEditor.Types;
 
 namespace RidersGearEditor
 {
@@ -12,7 +18,7 @@ namespace RidersGearEditor
     /*
     Gear struct is 0x1D0 in Size
     */
-    internal class GearStats : IEnumerator
+    internal class GearStats
     {
         // Syntax:  
         // <Offset> <Datatype>
@@ -20,102 +26,102 @@ namespace RidersGearEditor
 
         // 0x0 32-Bitstring
         // Who can select the gear
-        public uint Selectability;
+        public UInt32 Selectability = new(0x0);
         // 0x4 8-Bit char
         // GearType (0 for Baord, 1 for Skates, 2 for Bike)
-        public byte GearType;
+        public Byte GearType = new(0x4);
         /// <summary>
         /// 0x5 8-Bit char <para></para>
         /// Model (tends to crash if changed)
         /// </summary>
-        public byte Model;
+        public Byte Model = new(0x5);
         /// <summary>
         /// 0xC 32-Bit float
         /// Acceleration modifier
         /// </summary>
-        public float Acceleration;
+        public Float Acceleration = new(0xC);
         /// <summary>
         /// 0x10 32-Bit float
         /// SpeedMultiplier doesn't affect handling
         /// </summary>
-        public float SpeedMultiplier;
+        public Float SpeedMultiplier = new(0x10);
         /// <summary>
         /// 0x14 32-Bit float
         /// OffRoad factor
         /// </summary>
-        public float OffRoadSpeed;
+        public Float OffRoadSpeed = new(0x14);
         /// <summary>
         /// 0x18 32-Bit float
         /// Affects speed and handling
         /// </summary>
-        public float SpeedHandlingMultiplier;
+        public Float SpeedHandlingMultiplier = new(0x18);
         /// <summary>
         /// 0x1C 32-Bit float
         /// Weight affects bumping into people
         /// </summary>
-        public float Weight;
+        public Float Weight = new(0x1C);
         /// <summary>
         /// 0x23 8-Bit char
         /// bit 1 for speed, bit 2 for flight, bit 4 for power, bit 6 for flight+power, bit 7 for all
         /// </summary>
-        public byte ExtraAttribute;
+        public Byte ExtraAttribute = new(0x23);
         /// <summary>
         /// 0x24 32-Bit float
         /// (?) Speed loss while turning
         /// </summary>
-        public float SpeedLossByTurning;
+        public Float SpeedLossByTurning = new(0x24);
         /// <summary>
         /// 0x28 32-Bit float
         /// (?) Speed based handling, also affects flight handeling 
         /// </summary>
-        public float HandlingSpeed;
+        public Float HandlingSpeed = new(0x28);
         /// <summary>
         /// 0x2C 32-Bit float
         /// (?)
         /// </summary>
-        public float BackAxelHandling;
+        public Float BackAxelHandling = new(0x2C);
         /// <summary>
         /// 0x30 32-Bit float
         /// (?)
         /// </summary>
-        public float FrontAxelHandling;
+        public Float FrontAxelHandling = new(0x30);
         /// <summary>
         /// 0x34 32-Bit float
         /// 
         /// </summary>
-        public float DriftingRadius;
+        public Float DriftingRadius = new(0x34);
         /// <summary>
         /// 0x38
         /// </summary>
-        public float DriftRotation;
+        public Float DriftRotation = new(0x38);
         /// <summary>
         /// 0x3C
         /// </summary>
-        public float DriftRotationBackAxel;
+        public Float DriftRotationBackAxel = new(0x3C);
         /// <summary>
         /// 0x50
         /// </summary>
-        public float DriftDashChargeTimer;
+        public Float DriftDashChargeTimer = new(0x50);
         /// <summary>
         /// 0x54
         /// </summary>
-        public float TrickAirGainMultiplier;
+        public Float TrickAirGainMultiplier = new(0x54);
         /// <summary>
         /// 0x58
         /// </summary>
-        public float ShortcutAirGainMultiplier;
+        public Float ShortcutAirGainMultiplier = new(0x58);
         /// <summary>
         /// 0x5C
         /// </summary>
-        public float QTEAirGainMultiplier;
+        public Float QTEAirGainMultiplier = new(0x5C);
         /// <summary>
         /// 0x60
         /// </summary>
-        public uint SpecialFlags;
+        public UInt32 SpecialFlags = new(0x60);
         /// <summary>
         /// 0x64
         /// </summary>
-        public float JumpChargeAirMultiplier;
+        public Float JumpChargeAirMultiplier = new(0x64);
         #region GearLevelStats
         public GearLevelStats Level1Stats;
         public GearLevelStats Level2Stats;
@@ -123,42 +129,30 @@ namespace RidersGearEditor
         #endregion
 
         #region ShownStats
-        public sbyte ShownDashStat;
-        public sbyte ShownLimitStat;
-        public sbyte ShownPowerStat;
-        public sbyte ShownCorneringStat;
+        public SByte ShownDashStat;
+        public SByte ShownLimitStat;
+        public SByte ShownPowerStat;
+        public SByte ShownCorneringStat;
         #endregion
 
         #region Exhaust
-        public float ExaustTrailWidth;
-        public float SecondExhaustTrailWidth;
-        public float ExhaustTrailOffsetX;
-        public float ExhaustTrailOffsetY;
-        public float ExhaustTrailOffsetZ;
-        public float SecondExhaustTrailOffsetX;
-        public float SecondExhaustTrailOffsetY;
-        public float SecondExhaustTrailOffsetZ;
-        public uint ExhaustTrailFlags;
-        public float ExhaustTrailWidthTricks;
-        public float SecondExhaustTrailWidthTricks;
-        public float ExhaustTrailOffsetXTricks;
-        public float ExhaustTrailOffsetYTricks;
-        public float ExhaustTrailOffsetZTricks;
-        public float SecondExhaustTrailOffsetXTricks;
-        public float SecondExhaustTrailOffsetYTricks;
-        public float SecondExhaustTrailOffsetZTricks;
-
-        public object Current => throw new NotImplementedException();
-
-        public bool MoveNext()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Reset()
-        {
-            throw new NotImplementedException();
-        }
+        public Float ExaustTrailWidth;
+        public Float SecondExhaustTrailWidth;
+        public Float ExhaustTrailOffsetX;
+        public Float ExhaustTrailOffsetY;
+        public Float ExhaustTrailOffsetZ;
+        public Float SecondExhaustTrailOffsetX;
+        public Float SecondExhaustTrailOffsetY;
+        public Float SecondExhaustTrailOffsetZ;
+        public Float ExhaustTrailFlags;
+        public Float ExhaustTrailWidthTricks;
+        public Float SecondExhaustTrailWidthTricks;
+        public Float ExhaustTrailOffsetXTricks;
+        public Float ExhaustTrailOffsetYTricks;
+        public Float ExhaustTrailOffsetZTricks;
+        public Float SecondExhaustTrailOffsetXTricks;
+        public Float SecondExhaustTrailOffsetYTricks;
+        public Float SecondExhaustTrailOffsetZTricks;
         #endregion
     }
 
@@ -167,31 +161,56 @@ namespace RidersGearEditor
         /// <summary>
         /// 0x0
         /// </summary>
-        public uint MaxAir;
+        public UInt32 MaxAir;
         /// <summary>
         /// 0x4
         /// </summary>
-        public uint AirDrain;
+        public UInt32 AirDrain;
         /// <summary>
         /// 0x8
         /// </summary>
-        public uint DriftAirCost;
+        public UInt32 DriftAirCost;
         /// <summary>
         /// 0xC
         /// </summary>
-        public uint BoostCost;
+        public UInt32 BoostCost;
         /// <summary>
         /// 0x10
         /// </summary>
-        public uint TornadoCost;
+        public UInt32 TornadoCost;
         /// <summary>
         /// 0x14
         /// </summary>
-        public float DriftDashSpeed;
+        public Float DriftDashSpeed;
         /// <summary>
         /// 0x18
         /// </summary>
-        public float BoostSpeed;
+        public Float BoostSpeed;
+    }
+
+    [Flags]
+    public enum GearSpecialFlags
+    {
+        // TODO Add propper comments
+        IgnoreTurbulence = 0x_0000_0001,
+        MaxJump = 0x_0000_0002,
+        Ice = 0x_0000_0004,
+        NoBoost = 0x_0000_0010,
+        AutoDrift = 0x_0000_0020,
+        NoSpeedLossUphill = 0x_0000_0040,
+        TornadoBoost = 0x_0000_0080,
+        NoSpeedLossChargingJump = 0x_0000_0100,
+        FirstPlaceDoubleRings = 0x_0000_0200,
+        RingGear = 0x_0000_0400,
+        DisableAttack = 0x_0000_0800,
+        AlwaysAttack = 0x_0000_1000,
+        NoType = 0x_0000_2000,
+        NoPits = 0x_0000_4000,
+        AirStart30Percent = 0x_0000_8000,
+        AirStart50Percent = 0x_0001_0000,
+        IceImmunity = 0x_0002_0000,
+        LighBoardEffect = 0x_0004_0000,
+        StickyFingers = 0x_0008_0000,
     }
 
     public static class Utils

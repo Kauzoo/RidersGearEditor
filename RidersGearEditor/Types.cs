@@ -1,6 +1,6 @@
 using System;
 
-namespace RidersGearEditor
+namespace RidersGearEditor.Types
 {
     public interface IHexString
     {
@@ -93,17 +93,17 @@ namespace RidersGearEditor
     public interface IValueOffsetPair<T>
     {
         T Value { get; set; }
-        Hex32String Offset { get; set; }
+        uint Offset { get; set; }
     }
 
     public struct Byte : IValueOffsetPair<System.Byte>
     {
         public byte Value { get => value; set => this.value = value; }
-        public Hex32String Offset { get => offset; set => offset = value; }
+        public uint Offset { get => offset; set => offset = value; }
         private byte value;
-        private Hex32String offset;
+        private uint offset;
 
-        public Byte(Hex32String offset)
+        public Byte(uint offset)
         {
             Offset = offset;
         }
@@ -112,11 +112,11 @@ namespace RidersGearEditor
     public struct SByte : IValueOffsetPair<System.SByte>
     {
         public sbyte Value { get => value; set => this.value = value; }
-        public Hex32String Offset { get => offset; set => offset = value; }
+        public uint Offset { get => offset; set => offset = value; }
         private sbyte value;
-        private Hex32String offset;
+        private uint offset;
 
-        public SByte(Hex32String offset)
+        public SByte(uint offset)
         {
             Offset = offset;
         }
@@ -125,11 +125,11 @@ namespace RidersGearEditor
     public struct Int32 : IValueOffsetPair<System.Int32>
     {
         public int Value { get => value; set => this.value = value; }
-        public Hex32String Offset { get => offset; set => offset = value; }
+        public uint Offset { get => offset; set => offset = value; }
         private int value;
-        private Hex32String offset;
+        private uint offset;
 
-        public Int32(Hex32String offset)
+        public Int32(uint offset)
         {
             Offset = offset;
         }
@@ -138,11 +138,11 @@ namespace RidersGearEditor
     public struct UInt32 : IValueOffsetPair<System.UInt32>
     {
         public uint Value { get => value; set => this.value = value; }
-        public Hex32String Offset { get => offset; set => offset = value; }
+        public uint Offset { get => offset; set => offset = value; }
         private uint value;
-        private Hex32String offset;
+        private uint offset;
 
-        public UInt32(Hex32String offset)
+        public UInt32(uint offset)
         {
             Offset = offset;
         }
@@ -151,11 +151,11 @@ namespace RidersGearEditor
     public struct Float : IValueOffsetPair<float>
     {
         public float Value { get => value; set => this.value = value; }
-        public Hex32String Offset { get => offset; set => offset = value; }
+        public uint Offset { get => offset; set => offset = value; }
         private float value;
-        private Hex32String offset;
+        private uint offset;
 
-        public Float(Hex32String offset)
+        public Float(uint offset)
         {
             Offset = offset;
         }
