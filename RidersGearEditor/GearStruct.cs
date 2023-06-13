@@ -20,15 +20,15 @@ namespace RidersGearEditor
 
         // 0x0 32-Bitstring
         // Who can select the gear
-        public string Selectability;
+        public uint Selectability;
         // 0x4 8-Bit char
         // GearType (0 for Baord, 1 for Skates, 2 for Bike)
-        public string GearType;
+        public byte GearType;
         /// <summary>
         /// 0x5 8-Bit char <para></para>
         /// Model (tends to crash if changed)
         /// </summary>
-        public string Model;
+        public byte Model;
         /// <summary>
         /// 0xC 32-Bit float
         /// Acceleration modifier
@@ -78,70 +78,75 @@ namespace RidersGearEditor
         /// 0x30 32-Bit float
         /// (?)
         /// </summary>
-        public string FrontAxelHandling;
+        public float FrontAxelHandling;
         /// <summary>
         /// 0x34 32-Bit float
         /// 
         /// </summary>
-        public string DriftingRadius;
+        public float DriftingRadius;
         /// <summary>
         /// 0x38
         /// </summary>
-        public string DriftRotation;
+        public float DriftRotation;
         /// <summary>
         /// 0x3C
         /// </summary>
-        public string DriftRotationBackAxel;
+        public float DriftRotationBackAxel;
         /// <summary>
         /// 0x50
         /// </summary>
-        public string DriftDashChargeTimer;
+        public float DriftDashChargeTimer;
         /// <summary>
         /// 0x54
         /// </summary>
-        public string TrickAirGainMultiplier;
+        public float TrickAirGainMultiplier;
         /// <summary>
         /// 0x58
         /// </summary>
-        public string ShortcutAirGainMultiplier;
+        public float ShortcutAirGainMultiplier;
         /// <summary>
         /// 0x5C
         /// </summary>
-        public string QTEAirGainMultiplier;
+        public float QTEAirGainMultiplier;
         /// <summary>
         /// 0x60
         /// </summary>
-        public string SpecialFlags;
+        public uint SpecialFlags;
         /// <summary>
-        /// 
+        /// 0x64
         /// </summary>
-        public string JumpChargeAirMultiplier;
+        public float JumpChargeAirMultiplier;
+        #region GearLevelStats
         public GearLevelStats Level1Stats;
         public GearLevelStats Level2Stats;
         public GearLevelStats Level3Stats;
+        #endregion
 
-        public string ShownDashStat;
-        public string ShownLimitStat;
-        public string ShownPowerStat;
-        public string ShownCorneringStat;
+        #region ShownStats
+        public sbyte ShownDashStat;
+        public sbyte ShownLimitStat;
+        public sbyte ShownPowerStat;
+        public sbyte ShownCorneringStat;
+        #endregion
+
         #region Exhaust
-        public string ExaustTrailWidth;
-        public string SecondExhaustTrailWidth;
-        public string ExhaustTrailOffsetX;
-        public string ExhaustTrailOffsetY;
-        public string ExhaustTrailOffsetZ;
-        public string SecondExhaustTrailOffsetX;
-        public string SecondExhaustTrailOffsetY;
-        public string SecondExhaustTrailOffsetZ;
-        public string ExhaustTrailFlags;
-        public string ExhaustTrailWidthTricks;
-        public string SecondExhaustTrailWidthTricks;
-        public string ExhaustTrailOffsetXTricks;
-        public string ExhaustTrailOffsetYTricks;
-        public string ExhaustTrailOffsetZTricks;
-        public string SecondExhaustTrailOffsetXTricks;
-        public string SecondExhaustTrailOffsetYTricks;
-        public string SecondExhaustTrailOffsetZTricks;
+        public float ExaustTrailWidth;
+        public float SecondExhaustTrailWidth;
+        public float ExhaustTrailOffsetX;
+        public float ExhaustTrailOffsetY;
+        public float ExhaustTrailOffsetZ;
+        public float SecondExhaustTrailOffsetX;
+        public float SecondExhaustTrailOffsetY;
+        public float SecondExhaustTrailOffsetZ;
+        public uint ExhaustTrailFlags;
+        public float ExhaustTrailWidthTricks;
+        public float SecondExhaustTrailWidthTricks;
+        public float ExhaustTrailOffsetXTricks;
+        public float ExhaustTrailOffsetYTricks;
+        public float ExhaustTrailOffsetZTricks;
+        public float SecondExhaustTrailOffsetXTricks;
+        public float SecondExhaustTrailOffsetYTricks;
+        public float SecondExhaustTrailOffsetZTricks;
 
         public object Current => throw new NotImplementedException();
 
@@ -159,13 +164,40 @@ namespace RidersGearEditor
 
     public struct GearLevelStats
     {
-        public string MaxAir;
-        public string AirDrain;
-        public string DriftAirCost;
-        public string BoostCost;
-        public string TornadoCost;
-        public string DriftDashSpeed;
-        public string BoostSpeed;
+        /// <summary>
+        /// 0x0
+        /// </summary>
+        public uint MaxAir;
+        /// <summary>
+        /// 0x4
+        /// </summary>
+        public uint AirDrain;
+        /// <summary>
+        /// 0x8
+        /// </summary>
+        public uint DriftAirCost;
+        /// <summary>
+        /// 0xC
+        /// </summary>
+        public uint BoostCost;
+        /// <summary>
+        /// 0x10
+        /// </summary>
+        public uint TornadoCost;
+        /// <summary>
+        /// 0x14
+        /// </summary>
+        public float DriftDashSpeed;
+        /// <summary>
+        /// 0x18
+        /// </summary>
+        public float BoostSpeed;
+    }
+
+    public static class Utils
+    {
+        public static float ToSpeedometerSpeed(float ridersSpeed) => 216.0f * ridersSpeed;
+        public static float ToRidersSpeed(float speedometerSpeed) => speedometerSpeed / 216.0f;
     }
 
 }
