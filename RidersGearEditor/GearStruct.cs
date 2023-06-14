@@ -101,7 +101,7 @@ namespace RidersGearEditor
         /// <summary>
         /// 0x50
         /// </summary>
-        public Float DriftDashChargeTimer = new(0x50);
+        public Int32 DriftDashChargeTimer = new(0x50);
         /// <summary>
         /// 0x54
         /// </summary>
@@ -156,36 +156,36 @@ namespace RidersGearEditor
         #endregion
     }
 
-    public struct GearLevelStats
+    public class GearLevelStats
     {
         /// <summary>
         /// 0x0
         /// </summary>
-        public UInt32 MaxAir;
+        public UInt32 MaxAir = new(0x0);
         /// <summary>
         /// 0x4
         /// </summary>
-        public UInt32 AirDrain;
+        public UInt32 AirDrain = new(0x4);
         /// <summary>
         /// 0x8
         /// </summary>
-        public UInt32 DriftAirCost;
+        public UInt32 DriftAirCost = new(0x8);
         /// <summary>
         /// 0xC
         /// </summary>
-        public UInt32 BoostCost;
+        public UInt32 BoostCost = new(0xC);
         /// <summary>
         /// 0x10
         /// </summary>
-        public UInt32 TornadoCost;
+        public UInt32 TornadoCost = new(0x10);
         /// <summary>
         /// 0x14
         /// </summary>
-        public Float DriftDashSpeed;
+        public Float DriftDashSpeed = new(0x14);
         /// <summary>
         /// 0x18
         /// </summary>
-        public Float BoostSpeed;
+        public Float BoostSpeed = new(0x18);
     }
 
     [Flags]
@@ -211,6 +211,51 @@ namespace RidersGearEditor
         IceImmunity = 0x_0002_0000,
         LighBoardEffect = 0x_0004_0000,
         StickyFingers = 0x_0008_0000,
+    }
+
+    public enum GearAdress : uint
+    {
+        DefaultGear = 0x805E5F40,
+        HighBooster = 0x805E6110,
+        AutoSlider = 0x805E62E0,
+        PowerfulGear = 0x805E64B0,
+        Fastest = 0x805E6680,
+        TurboStar = 0x805E6850,
+        SpeedBalancer = 0x805E6A20,
+        BlueStar2 = 0x805E6BF0,
+        Access = 0x805E6DC0,
+        Beginner = 0x805E6F90,
+        Accelerator = 0x805E7160,
+        TrapGear = 0x805E7330,
+        LightBoard = 0x805E7500,
+        SlideBooser = 0x805E76D0,
+        legend = 0x805E78A0,
+        MagicCarpet = 0x805E7A70,
+        AirBroom = 0x805E7C40,
+        Hovercraft = 0x805E7E10,
+        ChaosEmerald = 0x805E7FE0,
+        Faster = 0x805E81B0,
+        Gambler = 0x805E8380,
+        PowerGear = 0x805E8550,
+        OpaOpa = 0x805E8720,
+        TheCrazy = 0x805E88F0,
+        Berserker = 0x805E8AC0,
+        ERider = 0x805E8C90,
+        AirTank = 0x805E8E60,
+        HeavyBike = 0x805E9030,
+        Destroye = 0x805E9200,
+        Omnipotence = 0x805E93D0,
+        CoverS = 0x805E95A0,
+        CoverF = 0x805E9770,
+        CoverP = 0x805E9940,
+        HangOn = 0x805E9B10,
+        SuperHangOn = 0x805E9CE0,
+        Darkness = 0x805E9EB0,
+        Grinder = 0x805EA080,
+        AdvantageS = 0x805EA250,
+        AdvantageF = 0x805EA420,
+        AdvantageP = 0x805EA5F0,
+        Cannonball = 0x805EA7C0
     }
 
     public static class Utils
