@@ -8,17 +8,31 @@ using RidersGearEditor.Types;
 
 namespace RidersGearEditor
 {
-    internal class ExtremeGear
+    public interface IDataStruct
     {
-        public Hex32String adress;
-        public GearStats gearStats;
+
+    }
+
+    public class ExtremeGear : GearStats
+    {
+        public uint GearAdress { get; set; }
+
+        public ExtremeGear(GearAdress gearAdress)
+        {
+            GearAdress = RCMUtils.SwapEndian((uint) gearAdress);
+        }
+
+        public ExtremeGear(uint gearAdress)
+        {
+            GearAdress = gearAdress;
+        }
     }
 
     // Contains general gear stats
     /*
     Gear struct is 0x1D0 in Size
     */
-    internal class GearStats
+    public class GearStats : IDataStruct
     {
         // Syntax:  
         // <Offset> <Datatype>
@@ -258,7 +272,14 @@ namespace RidersGearEditor
         Cannonball = 0x805EA7C0
     }
 
-    public static class Utils
+    public class GeneralStats
+    {
+        public Float SSRankSpeed = new(0x805c2484);
+        public Float SRankSpeed = new(0x805c2480);
+        public Float XRankSpeed = new(0x805C2488);
+    }
+
+    public static class SonicRidersUtils
     {
         public static float ToSpeedometerSpeed(float ridersSpeed) => 216.0f * ridersSpeed;
         public static float ToRidersSpeed(float speedometerSpeed) => speedometerSpeed / 216.0f;
