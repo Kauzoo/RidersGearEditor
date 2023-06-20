@@ -34,11 +34,11 @@ namespace RidersGearEditor.Types
     public struct Hex8String : IHexString
     {
         public char[] Value { get => value; set => this.value = value; }
-        public char[] value = new char[2];
  
         public Hex8String(char[] value)
         {
             // TODO
+            value = new char[2];
         }
 
         public Hex8String(string value)

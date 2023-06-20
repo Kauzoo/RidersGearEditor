@@ -27,8 +27,6 @@ namespace RidersGearEditor
             section.Size = size;
             return section;
         }
-
-        public string
     }
     public struct DataSection : IDolHeaderSection
     {
