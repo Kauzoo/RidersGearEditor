@@ -9,11 +9,10 @@ using static System.Collections.Specialized.BitVector32;
 
 namespace RidersGearEditor
 {
-    internal class DolManager
+    public class DolManager
     {
-    }
 
-    public record struct DolHeader(uint[] textFileOffsets, uint[] dataFileOffsets, uint[] textMemAdresses, uint[] dataMemAdresses);
+    }
 
     public interface IDolHeaderSection
     {
@@ -28,6 +27,8 @@ namespace RidersGearEditor
             section.Size = size;
             return section;
         }
+
+        public string
     }
     public struct DataSection : IDolHeaderSection
     {
@@ -37,7 +38,9 @@ namespace RidersGearEditor
 
         public DataSection(uint fileOffset, uint memAdress, uint size)
         {
-            IDolHeaderSection.CreateDolHeaderSection(this, fileOffset, memAdress, size);
+            FileOffset = fileOffset;
+            MemAddress = memAdress;
+            Size = size;
         }
     }
     public struct TextSection : IDolHeaderSection
@@ -48,21 +51,23 @@ namespace RidersGearEditor
 
         public TextSection(uint fileOffset, uint memAdress, uint size)
         {
-            IDolHeaderSection.CreateDolHeaderSection(this, fileOffset, memAdress, size);
+            FileOffset = fileOffset;
+            MemAddress = memAdress;
+            Size = size;
         }
     }
 
-    public class Dol
+    public class DolInfo
     {
         public static readonly string DolExtension = ".dol"; 
         private readonly string _filePath;
 
-        public TextSection[] TextSections { get; private set; }
-        public DataSection[] DataSections { get; private set; }
+        public TextSection[]? TextSections { get; private set; }
+        public DataSection[]? DataSections { get; private set; }
         public uint MaxDolOffset { get; private set; }
         public uint MaxRAMAdress { get; private set; }
 
-        public Dol(string? filePath)
+        public DolInfo(string? filePath)
         {
             if (filePath is null)
                 throw new ArgumentNullException(nameof(filePath));
@@ -73,6 +78,7 @@ namespace RidersGearEditor
             if (!Path.HasExtension(filePath) || Path.GetExtension(filePath) != DolExtension)
                 throw new ArgumentException();
             this._filePath = filePath;
+            ParseHeader();
         }
 
         /// <summary>
@@ -90,7 +96,7 @@ namespace RidersGearEditor
         /// 0x00E4 0x1C[] unused
         /// 0x0100        Start of sections data (body)
         /// </summary>
-        public void ParseHeader()
+        private void ParseHeader()
         {
             // This is a pretty direct adaption of the code in MCM
             // Important Note: Adresses are converted to LittleEndian here
@@ -109,6 +115,9 @@ namespace RidersGearEditor
                     var bssSize = header.ToUInt32(220, true);               // 0x00DC | 4 Byte
                     var entryPoint = header.ToUInt32(224, true);            // 0x00E0 | 4 Byte
 
+                    MaxDolOffset = 0u;
+                    MaxRAMAdress = 0u;
+
                     // Create Text Sections
                     var tempTextSections = new List<TextSection>();
                     for (var i = 0; i < 6; i++)
@@ -117,6 +126,8 @@ namespace RidersGearEditor
                         if (textFileOffsets[i] == 0u || textMemAddresses[i] == 0u || textSectionSizes[i] == 0u)
                             break;
                         tempTextSections.Add(new TextSection(textFileOffsets[i], textMemAddresses[i], textSectionSizes[i]));
+                        MaxDolOffset = (textFileOffsets[i] + textSectionSizes[i] > MaxDolOffset) ? textFileOffsets[i] + textSectionSizes[i] : MaxDolOffset;
+                        MaxRAMAdress = (textMemAddresses[i] + textSectionSizes[i] > MaxRAMAdress) ? textMemAddresses[i] + textSectionSizes[i] : MaxRAMAdress;
                     }
                     TextSections = tempTextSections.ToArray();
 
@@ -128,8 +139,54 @@ namespace RidersGearEditor
                         if (dataFileOffsets[i] == 0u || dataMemAddresses[i] == 0u || dataSectionSizes[i] == 0u)
                             break;
                         tempDataSections.Add(new DataSection(dataFileOffsets[i], dataMemAddresses[i], dataSectionSizes[i]));
+                        MaxDolOffset = (dataFileOffsets[i] + dataSectionSizes[i] > MaxDolOffset) ? dataFileOffsets[i] + dataSectionSizes[i] : MaxDolOffset;
+                        MaxRAMAdress = (dataMemAddresses[i] + dataSectionSizes[i] > MaxRAMAdress) ? dataMemAddresses[i] + dataSectionSizes[i] : MaxRAMAdress;
                     }
                     DataSections = tempDataSections.ToArray();
+                }
+            }
+        }
+
+        public uint DolOffsetToRamAddress(uint dolOffset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public uint RamAddressToDolOffset(uint ramAddress)
+        {
+            // ramAddress = RCMUtils.SwapEndian(ramAddress);   // TODO temporary
+            foreach (var section in DataSections!)
+            {
+                if (ramAddress >= section.MemAddress && ramAddress < section.MemAddress + section.Size)
+                {
+                    var offsetInRam = ramAddress - section.MemAddress;
+                    return section.FileOffset + offsetInRam;
+                }
+            }
+
+            foreach (var section in TextSections!)
+            {
+                if (ramAddress >= section.MemAddress && ramAddress < section.MemAddress + section.Size)
+                {
+                    var offsetInRam = ramAddress - section.MemAddress;
+                    return section.FileOffset + offsetInRam;
+                }
+            }
+            return 0;
+        }
+
+        public string PrintValue(uint dolOffset)
+        {
+            using (var stream = File.Open(_filePath, FileMode.Open))
+            {
+                using (var binaryReader = new BinaryReader(stream))
+                {
+                    byte[] buffer = new byte[4];
+                    var bytes = binaryReader.ReadBytes(1125000);
+                    // 1072862
+                    buffer = bytes[((int)dolOffset)..((int)dolOffset + 4)];
+                    //binaryReader.Read(buffer, ((int)dolOffset), 4);
+                    return Convert.ToHexString(buffer, 0, 4);
                 }
             }
         }
@@ -153,8 +210,10 @@ namespace RidersGearEditor
 
         public static void Main()
         {
-            var dol = new Dol("E:\\source\\Riders_DX_2.0\\sys\\main.dol");
-            dol.ParseHeader();
+            var dol = new DolInfo("E:\\source\\Riders_DX_2.0\\sys\\main.dol");
+            // BigEndian:       010574
+            // LittleEndian:    740501    
+            Console.WriteLine(dol.PrintValue(dol.RamAddressToDolOffset(0x74_05_01)));
         }
     }
 }
