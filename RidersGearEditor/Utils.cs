@@ -4,7 +4,6 @@ using System.Collections;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Linq;
-using RidersGearEditor.Types;
 
 public static class RCMUtils
 {

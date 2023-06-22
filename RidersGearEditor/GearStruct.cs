@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Reflection;
+using System.Collections.Generic;
 using Byte = RidersGearEditor.Types.Byte;
 using SByte = RidersGearEditor.Types.SByte;
 using Float = RidersGearEditor.Types.Float;
@@ -7,16 +9,33 @@ using UInt32 = RidersGearEditor.Types.UInt32;
 using Int32 = RidersGearEditor.Types.Int32;
 using RidersGearEditor.Types;
 
+#nullable enable
 namespace RidersGearEditor
 {
     public interface IDataStruct
     {
+        public static Dictionary<string, object?> GetFields(IDataStruct data)
+        {
+            var fields = new Dictionary<string, object?>();
+            var info = data.GetType().GetFields();
+            foreach (var field in info)
+            {
+                fields.Add(field.Name, field.GetValue(data));
+            }
+            return fields;
+        }
 
+        public static void Main()
+        {
+            var tmp = GetFields(new ExtremeGear(GearAdress.HighBooster).gearStats);
+            Console.WriteLine("ja moin");
+        }
     }
 
-    public class ExtremeGear : GearStats
+    public class ExtremeGear
     {
         public uint GearAdress { get; set; }
+        public GearStats gearStats = new GearStats();
 
         public ExtremeGear(GearAdress gearAdress)
         {
@@ -41,7 +60,7 @@ namespace RidersGearEditor
 
         // 0x0 32-Bitstring
         // Who can select the gear
-        public UInt32 Selectability = new(0x0);
+        public UInt32 selectability = new(0x0);
         // 0x4 8-Bit char
         // GearType (0 for Baord, 1 for Skates, 2 for Bike)
         public Byte GearType = new(0x4);
@@ -138,9 +157,9 @@ namespace RidersGearEditor
         /// </summary>
         public Float JumpChargeAirMultiplier = new(0x64);
         #region GearLevelStats
-        public GearLevelStats Level1Stats;
-        public GearLevelStats Level2Stats;
-        public GearLevelStats Level3Stats;
+        public GearLevelStats Level1Stats = new GearLevelStats();
+        public GearLevelStats Level2Stats = new GearLevelStats();
+        public GearLevelStats Level3Stats = new GearLevelStats();
         #endregion
 
         #region ShownStats
@@ -196,11 +215,11 @@ namespace RidersGearEditor
         /// <summary>
         /// 0x14
         /// </summary>
-        public Float DriftDashSpeed = new(0x14);
+        public Float driftDashSpeed = new(0x14);
         /// <summary>
         /// 0x18
         /// </summary>
-        public Float BoostSpeed = new(0x18);
+        public Float boostSpeed = new(0x18);
     }
 
     [Flags]

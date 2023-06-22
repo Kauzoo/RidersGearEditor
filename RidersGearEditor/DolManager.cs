@@ -204,12 +204,12 @@ namespace RidersGearEditor
             return addr;
         }
 
-        public static void Main()
+        /* public static void Main()
         {
             var dol = new DolInfo("E:\\source\\Riders_DX_2.0\\sys\\main.dol");
             // BigEndian:       010574
             // LittleEndian:    740501    
             Console.WriteLine(dol.PrintValue(dol.RamAddressToDolOffset(0x74_05_01)));
-        }
+        } */
     }
 }

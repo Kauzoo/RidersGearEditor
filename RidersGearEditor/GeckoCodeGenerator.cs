@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using static RCMUtils;
-using System;
+
 // TODO Migrate this to a full featured GeckCode Generator
 namespace RidersGearEditor
 {
