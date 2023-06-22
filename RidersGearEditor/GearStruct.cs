@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Byte = RidersGearEditor.Types.Byte;
 using SByte = RidersGearEditor.Types.SByte;

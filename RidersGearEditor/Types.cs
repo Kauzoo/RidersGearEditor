@@ -220,20 +220,4 @@ namespace RidersGearEditor.Types
         }
     }
     #endregion
-
-
-    public struct AddressValuePair
-    {
-        public Hex32String Address;
-        public Hex32String Value;
-    }
-
-    public struct RAMGeckoCode
-    {
-        public string value;
-        public RAMGeckoCode(AddressValuePair addressValuePair)
-        {
-
-        }
-    }
 }

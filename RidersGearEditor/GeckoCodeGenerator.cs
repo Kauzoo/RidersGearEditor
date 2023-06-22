@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using static RCMUtils;
+using System;
 // TODO Migrate this to a full featured GeckCode Generator
 namespace RidersGearEditor
 {
@@ -52,11 +53,5 @@ namespace RidersGearEditor
     public interface IGeckoCode
     {
 
-    }
-
-    public struct DirectRamWrite : IGeckoCode
-    {
-        public Hex32String Part1 { get; set; }
-        public Hex32String Part2 { get; set; }
     }
 }
