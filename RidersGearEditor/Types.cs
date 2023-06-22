@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Linq;
 using static RCMUtils;
 
 namespace RidersGearEditor.Types
