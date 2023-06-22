@@ -71,8 +71,6 @@ namespace RidersGearEditor
                 throw new ArgumentNullException(nameof(filePath));
             if (!Path.IsPathFullyQualified(filePath))
                 throw new ArgumentException();
-            if (!Path.Exists(filePath))
-                throw new ArgumentException();
             if (!Path.HasExtension(filePath) || Path.GetExtension(filePath) != DolExtension)
                 throw new ArgumentException();
             this._filePath = filePath;
@@ -105,7 +103,7 @@ namespace RidersGearEditor
                     var header = binaryReader.ReadBytes(256);
                     var textFileOffsets = ToAddress(header[..28]);          // 0x0000 - 0x001B | 7 * 4 Byte
                     var dataFileOffsets = ToAddress(header[28..72]);        // 0x001C - 0x0047 | 11 * 4 Byte
-                    var textMemAddresses = ToAddress(header[72..100]);      // 0x0048 - 0x008F | 7 * 4 Byte
+                    var textMemAddresses = ToAddress(header[72..0x64]);      // 0x0048 - 0x008F | 7 * 4 Byte
                     var dataMemAddresses = ToAddress(header[100..144]);     // 0x0064 - 0x008F | 11 * 4 Byte
                     var textSectionSizes = ToAddress(header[144..172]);     // 0x0090 - 0x00AB | 7 * 4 Byte
                     var dataSectionSizes = ToAddress(header[172..216]);     // 0x00AC - 0x00D7 | 11 * 4 Byte

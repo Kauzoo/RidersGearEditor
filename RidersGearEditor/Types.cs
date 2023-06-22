@@ -87,7 +87,7 @@ namespace RidersGearEditor.Types
         public byte ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
         public byte ValueBE { get => value; set => this.value = value; }
-        public uint OffsetBE { get => SwapEndian(offset); set => this.offset = SwapEndian(value); }
+        public uint OffsetBE { get => SwapEndian(offset); set => offset = SwapEndian(value); }
         public string ValueHexLE { get => ToHex(value); set => this.value = HexToByte(value); }
         public string ValueHexBE { get => ToHex(value); set => this.value = HexToByte(value); }
         public string OffsetHexLE { get => ToHex(offset); set => offset = HexToUInt32(value); }
@@ -98,10 +98,11 @@ namespace RidersGearEditor.Types
 
         public Byte(uint offset, bool bigEndian = true)
         {
+            value = 0;
             if (bigEndian)
-                OffsetBE = offset;
+                this.offset = SwapEndian(offset);
             else
-                OffsetLE = offset;
+                this.offset = offset;
         }
 
         public void MakeAdressAbsolute(uint baseAdress)
@@ -115,7 +116,7 @@ namespace RidersGearEditor.Types
         public sbyte ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
         public sbyte ValueBE { get => value; set => this.value = value; }
-        public uint OffsetBE { get => SwapEndian(offset); set => this.offset = SwapEndian(value); }
+        public uint OffsetBE { get => SwapEndian(offset); set => offset = SwapEndian(value); }
         public string ValueHexLE { get => ToHex(value); set => this.value = HexToSByte(value); }
         public string ValueHexBE { get => ToHex(value); set => this.value = HexToSByte(value); }
         public string OffsetHexLE { get => ToHex(offset); set => offset = HexToUInt32(value); }
@@ -126,10 +127,11 @@ namespace RidersGearEditor.Types
 
         public SByte(uint offset, bool bigEndian = true)
         {
+            value = 0;
             if (bigEndian)
-                OffsetBE = offset;
+                this.offset = SwapEndian(offset);
             else
-                OffsetLE = offset;
+                this.offset = offset;
         }
 
         public void MakeAdressAbsolute(uint baseAdress)
@@ -143,7 +145,7 @@ namespace RidersGearEditor.Types
         public int ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
         public int ValueBE { get => SwapEndian(value); set => this.value = SwapEndian(value); }
-        public uint OffsetBE { get => SwapEndian(offset); set => this.offset = SwapEndian(value); }
+        public uint OffsetBE { get => SwapEndian(offset); set => offset = SwapEndian(value); }
         public string ValueHexLE { get => ToHex(value); set => this.value = HexToInt32(value); }
         public string ValueHexBE { get => ToHex(ValueBE); set => this.value = SwapEndian(HexToInt32(value)); }
         public string OffsetHexLE { get => ToHex(offset); set => offset = HexToUInt32(value); }
@@ -154,10 +156,11 @@ namespace RidersGearEditor.Types
 
         public Int32(uint offset, bool bigEndian = true)
         {
+            value = 0;
             if (bigEndian)
-                OffsetBE = offset;
+                this.offset = offset;
             else
-                OffsetLE = offset;
+                this.offset = offset;
         }
 
         public void MakeAdressAbsolute(uint baseAdress)
@@ -171,7 +174,7 @@ namespace RidersGearEditor.Types
         public uint ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
         public uint ValueBE { get => SwapEndian(value); set => this.value = SwapEndian(value); }
-        public uint OffsetBE { get => SwapEndian(offset); set => this.offset = SwapEndian(value); }
+        public uint OffsetBE { get => SwapEndian(offset); set => offset = SwapEndian(value); }
         public string ValueHexLE { get => ToHex(value); set => this.value = HexToUInt32(value); }
         public string ValueHexBE { get => ToHex(ValueBE); set => this.value = SwapEndian(HexToUInt32(value)); }
         public string OffsetHexLE { get => ToHex(offset); set => offset = HexToUInt32(value); }
@@ -181,10 +184,11 @@ namespace RidersGearEditor.Types
 
         public UInt32(uint offset, bool bigEndian = true)
         {
+            value = 0;
             if (bigEndian)
-                OffsetBE = offset;
+                this.offset = SwapEndian(offset);
             else
-                OffsetLE = offset;
+                this.offset = offset;
         }
 
         public void MakeAdressAbsolute(uint baseAdress)
@@ -198,7 +202,7 @@ namespace RidersGearEditor.Types
         public float ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
         public float ValueBE { get => SwapEndian(value); set => this.value = SwapEndian(value); }
-        public uint OffsetBE { get => SwapEndian(offset); set => this.offset = SwapEndian(value); }
+        public uint OffsetBE { get => SwapEndian(offset); set => offset = SwapEndian(value); }
         public string ValueHexLE { get => ToHex(value); set => this.value = HexToFloat(value); }
         public string ValueHexBE { get => ToHex(ValueBE); set => this.value = SwapEndian(HexToFloat(value)); }
         public string OffsetHexLE { get => ToHex(offset); set => offset = HexToUInt32(value); }
@@ -208,10 +212,11 @@ namespace RidersGearEditor.Types
 
         public Float(uint offset, bool bigEndian = true)
         {
+            value = 0;
             if (bigEndian)
-                OffsetBE = offset;
+                this.offset = SwapEndian(offset);
             else
-                OffsetLE = offset;
+                this.offset = offset;
         }
 
         public void MakeAdressAbsolute(uint baseAdress)
