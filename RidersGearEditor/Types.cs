@@ -7,6 +7,15 @@ using static RCMUtils;
 
 namespace RidersGearEditor.Types
 {
+    // TODO Add big endian types
+
+    public interface IGuiUsable
+    {
+        bool ParseRestricions();
+        // Read a string input and try to apply for underlying type
+        bool TryParseToCode(string str, out string code);
+    }
+
     #region HexString
     public interface IHexString
     {
@@ -49,41 +58,37 @@ namespace RidersGearEditor.Types
         public static void SwapEndian(this IByteArray number) => number.Bytes.Reverse();
     }
 
-    public struct Int32_s : IByteArray
+    public interface IValueMemoryPair<T>
     {
-        public byte[] Bytes { get => BitConverter.GetBytes(val); set => val = BitConverter.ToInt32(value); }
-        int val;
-        public Int32_s(int val) { this.val = val; }
-        public Int32_s(byte[] val) { this.val = BitConverter.ToInt32(val); }
+        public abstract T ValueLE { get; set; }
+        public abstract T ValueBE { get; set; }
+        public abstract string ValueHexLE { get; set; }
+        public abstract string ValueHexBE { get; set; }
     }
 
-    public interface IValueOffsetPair<T>
+    public interface IValueOffsetPair<T> : IValueMemoryPair<T>
     {
-        T ValueLE { get; set; }
-        T ValueBE { get; set; }
-        uint OffsetLE { get; set; }
-        uint OffsetBE { get; set; }
-        string ValueHexLE { get; set; }
-        string ValueHexBE { get; set; }
-        string OffsetHexLE { get; set; }
-        string OffsetHexBE { get; set; }
-
-
-        public static void ToAbsoluteAdress(uint baseAdress, IValueOffsetPair<T> valueOffsetPair)
-        {
-            valueOffsetPair.OffsetLE += baseAdress;
-        }
+        public abstract uint OffsetLE { get; set; }
+        public abstract uint OffsetBE { get; set; }
+        public abstract string OffsetHexLE { get; set; }
+        public abstract string OffsetHexBE { get; set; }
 
         void MakeAdressAbsolute(uint baseAdress);
-
-
+        IValueAddressPair<T> ToAbsoluteAdress(uint baseAdress);
     }
 
-    public class IValueAdressPair<T> where T : IByteArray
+    public interface IValueAddressPair<T> : IValueMemoryPair<T>
     {
+        public abstract IValueOffsetPair<T> Pair { get; set; }
+        public abstract uint AddressLE { get; set; }
+        public abstract uint AddressBE { get; set; }
+        public abstract string AddressHexLE { get; set; }
+        public abstract string AddressHexBE { get; set; }
     }
 
-    public struct Byte : IValueOffsetPair<System.Byte>
+
+
+    public struct ByteValueOffsetPair : IValueOffsetPair<System.Byte>
     {
         public byte ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
@@ -97,7 +102,7 @@ namespace RidersGearEditor.Types
         private byte value;
         private uint offset;
 
-        public Byte(uint offset, bool bigEndian = true)
+        public ByteValueOffsetPair(uint offset, bool bigEndian = true)
         {
             value = 0;
             if (bigEndian)
@@ -108,11 +113,16 @@ namespace RidersGearEditor.Types
 
         public void MakeAdressAbsolute(uint baseAdress)
         {
-            IValueOffsetPair<System.Byte>.ToAbsoluteAdress(baseAdress, this);
+            OffsetLE += baseAdress;
+        }
+
+        public IValueAddressPair<byte> ToAbsoluteAdress(uint baseAdress)
+        {
+            throw new NotImplementedException();
         }
     }
 
-    public struct SByte : IValueOffsetPair<System.SByte>
+    public struct SByteValueOffsetPair : IValueOffsetPair<System.SByte>
     {
         public sbyte ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
@@ -126,7 +136,7 @@ namespace RidersGearEditor.Types
         private sbyte value;
         private uint offset;
 
-        public SByte(uint offset, bool bigEndian = true)
+        public SByteValueOffsetPair(uint offset, bool bigEndian = true)
         {
             value = 0;
             if (bigEndian)
@@ -137,11 +147,16 @@ namespace RidersGearEditor.Types
 
         public void MakeAdressAbsolute(uint baseAdress)
         {
-            IValueOffsetPair<System.SByte>.ToAbsoluteAdress(baseAdress, this);
+            OffsetLE += baseAdress;
+        }
+
+        public IValueAddressPair<sbyte> ToAbsoluteAdress(uint baseAdress)
+        {
+            throw new NotImplementedException();
         }
     }
 
-    public struct Int32 : IValueOffsetPair<System.Int32>
+    public struct Int32ValueOffsetPair : IValueOffsetPair<System.Int32>
     {
         public int ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
@@ -155,7 +170,7 @@ namespace RidersGearEditor.Types
         private int value;
         private uint offset;
 
-        public Int32(uint offset, bool bigEndian = true)
+        public Int32ValueOffsetPair(uint offset, bool bigEndian = true)
         {
             value = 0;
             if (bigEndian)
@@ -166,11 +181,16 @@ namespace RidersGearEditor.Types
 
         public void MakeAdressAbsolute(uint baseAdress)
         {
-            IValueOffsetPair<System.Int32>.ToAbsoluteAdress(baseAdress, this);
+            OffsetLE += baseAdress;
+        }
+
+        public IValueAddressPair<int> ToAbsoluteAdress(uint baseAdress)
+        {
+            throw new NotImplementedException();
         }
     }
 
-    public struct UInt32 : IValueOffsetPair<System.UInt32>
+    public struct UInt32ValueOffsetPair : IValueOffsetPair<System.UInt32>
     {
         public uint ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
@@ -183,7 +203,7 @@ namespace RidersGearEditor.Types
         private uint value;
         private uint offset;
 
-        public UInt32(uint offset, bool bigEndian = true)
+        public UInt32ValueOffsetPair(uint offset, bool bigEndian = true)
         {
             value = 0;
             if (bigEndian)
@@ -194,11 +214,16 @@ namespace RidersGearEditor.Types
 
         public void MakeAdressAbsolute(uint baseAdress)
         {
-            IValueOffsetPair<System.UInt32>.ToAbsoluteAdress(baseAdress, this);
+            OffsetLE += baseAdress;
+        }
+
+        public IValueAddressPair<uint> ToAbsoluteAdress(uint baseAdress)
+        {
+            throw new NotImplementedException();
         }
     }
 
-    public struct Float : IValueOffsetPair<float>
+    public struct FloatValueOffsetPair : IValueOffsetPair<float>, IGuiUsable
     {
         public float ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
@@ -211,7 +236,7 @@ namespace RidersGearEditor.Types
         private float value;
         private uint offset;
 
-        public Float(uint offset, bool bigEndian = true)
+        public FloatValueOffsetPair(uint offset, bool bigEndian = true)
         {
             value = 0;
             if (bigEndian)
@@ -220,9 +245,50 @@ namespace RidersGearEditor.Types
                 this.offset = offset;
         }
 
-        public void MakeAdressAbsolute(uint baseAdress)
+        public void MakeAdressAbsolute(uint baseAdress) => OffsetLE += baseAdress;
+        public IValueAddressPair<float> ToAbsoluteAdress(uint baseAdress) => new FloatValAddrPair(baseAdress, this);
+
+        public bool ParseRestricions()
         {
-            IValueOffsetPair<float>.ToAbsoluteAdress(baseAdress, this);
+            throw new NotImplementedException();
+        }
+
+        public bool TryParseToCode(string str, out string code)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    #endregion
+
+    #region ValueAdressPairs
+    public struct FloatValAddrPair : IValueAddressPair<float>
+    {
+        public IValueOffsetPair<float> Pair { get => pair; set => pair = (FloatValueOffsetPair)value; }
+        public float ValueLE { get => Pair.ValueLE; set => Pair.ValueLE = value; }
+        public float ValueBE { get => Pair.ValueBE; set => Pair.ValueBE = value; }
+        public string ValueHexLE { get => Pair.ValueHexLE; set => Pair.ValueHexLE = value; }
+        public string ValueHexBE { get => Pair.ValueHexBE; set => Pair.ValueHexBE = value; }
+        public uint AddressLE { get => Pair.OffsetLE; set => Pair.OffsetLE = value; }
+        public uint AddressBE { get => Pair.OffsetBE; set => Pair.OffsetBE = value; }
+        public string AddressHexLE { get => Pair.OffsetHexLE; set => Pair.OffsetHexLE = value; }
+        public string AddressHexBE { get => Pair.OffsetHexBE; set => Pair.OffsetHexBE = value; }
+        private FloatValueOffsetPair pair;
+
+        public FloatValAddrPair(uint baseAdress, FloatValueOffsetPair pair)
+        {
+            pair.MakeAdressAbsolute(baseAdress);
+            this.pair = pair;
+        }
+
+        public FloatValAddrPair(uint absoluteAdress, float value)
+        {
+            pair = new FloatValueOffsetPair(absoluteAdress);
+            pair.ValueLE = value;
+        }
+
+        public FloatValAddrPair(uint absoluteAdress)
+        {
+            pair = new FloatValueOffsetPair(absoluteAdress);
         }
     }
     #endregion
