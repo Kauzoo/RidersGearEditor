@@ -11,20 +11,22 @@ namespace RidersGearEditor.Types
 
     public interface IGuiUsable
     {
+        public bool TrySetValue(string str);
         bool ParseRestricions();
         // Read a string input and try to apply for underlying type
         bool TryParseToCode(string str, out string code);
     }
 
     #region HexString
-    public interface IHexString
+    public interface IHexString : IByteArray
     {
         private static readonly string hexMarkerSmall = "0x";
         private static readonly string hexMarkerBig = "0X";
         private static readonly string[] hexMarkers = { "0x", "0X" };
         private static readonly char[] hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-        public char[] Value { get; set; }
+        public abstract string Value { get; set; }
+        public abstract char[] Chars { get; set; }
 
         public static bool IsHexString(string str)
         {
@@ -37,8 +39,6 @@ namespace RidersGearEditor.Types
         }
 
         public static string RemoveHexMarker(string str) => (str.StartsWith(hexMarkerSmall) || str.StartsWith(hexMarkerBig)) ? str[2..] : str;
-
-        bool ValidateHexString(string str);
     }
     #endregion
 
@@ -50,7 +50,7 @@ namespace RidersGearEditor.Types
     #region TypeWrappers
     public interface IByteArray
     {
-        public byte[] Bytes { get; set; }
+        public abstract byte[] Bytes { get; set; }
     }
 
     public static class RCMNumberUtils
@@ -58,32 +58,81 @@ namespace RidersGearEditor.Types
         public static void SwapEndian(this IByteArray number) => number.Bytes.Reverse();
     }
 
+    public struct HexString : IHexString
+    {
+        public string Value { get => val; set => val = value; }
+        public byte[] Bytes { get => Convert.FromHexString(val); set => Convert.ToHexString(value); }
+        public char[] Chars { get => val.ToCharArray(); set => value.ToString(); }
+        private string val;
+
+        public HexString(string str) => val = str;
+        public HexString(byte[] bytes) => val = Convert.ToHexString(bytes);
+
+        public override string ToString() => $"0x{val}";
+
+        public static implicit operator HexString(string str) => (IHexString.IsHexString(str)) ? new HexString(IHexString.RemoveHexMarker(str)) : throw new InvalidCastException();
+        public static implicit operator string(HexString str) => str.val;
+        public static explicit operator HexString(HexStringBE str) => new HexString(str.Bytes.Reverse().ToArray());
+        public static explicit operator HexStringBE(HexString str) => new HexStringBE(str.Bytes.Reverse().ToArray());
+    }
+
+    public struct HexStringBE : IHexString
+    {
+        public string Value { get => val; set => val = value; }
+        public byte[] Bytes { get => Convert.FromHexString(val); set => Convert.ToHexString(value); }
+        public char[] Chars { get => val.ToCharArray(); set => value.ToString(); }
+        private string val;
+
+        public HexStringBE(string str) => val = str;
+        public HexStringBE(byte[] bytes) => val = Convert.ToHexString(bytes);
+
+        public override string ToString() => $"0x{val}";
+
+        public static implicit operator HexStringBE(string str) => (IHexString.IsHexString(str)) ? new HexStringBE(IHexString.RemoveHexMarker(str)) : throw new InvalidCastException();
+        public static implicit operator string(HexStringBE str) => str.val;
+    }
+
+    public interface IGeckoParsable
+    {
+        HexString GetValue();
+        byte[] GetValueBytes();
+        HexString GetAdress();
+        byte[] GetAddressBytes();
+        bool TrySetValue(string value);
+        void SetValue(HexString str);
+    }
+
+    public interface IOffset
+    {
+        
+    }
+
     public interface IValueMemoryPair<T>
     {
         public abstract T ValueLE { get; set; }
         public abstract T ValueBE { get; set; }
-        public abstract string ValueHexLE { get; set; }
-        public abstract string ValueHexBE { get; set; }
+        public abstract HexString ValueHexLE { get; set; }
+        public abstract HexString ValueHexBE { get; set; }
     }
 
     public interface IValueOffsetPair<T> : IValueMemoryPair<T>
     {
         public abstract uint OffsetLE { get; set; }
-        public abstract uint OffsetBE { get; set; }
-        public abstract string OffsetHexLE { get; set; }
-        public abstract string OffsetHexBE { get; set; }
+        public abstract Buint OffsetBE { get; set; }
+        public abstract HexString OffsetHexLE { get; set; }
+        public abstract HexString OffsetHexBE { get; set; }
 
         void MakeAdressAbsolute(uint baseAdress);
         IValueAddressPair<T> ToAbsoluteAdress(uint baseAdress);
     }
 
-    public interface IValueAddressPair<T> : IValueMemoryPair<T>
+    public interface IValueAddressPair<T> : IValueMemoryPair<T>, IGeckoParsable
     {
         public abstract IValueOffsetPair<T> Pair { get; set; }
         public abstract uint AddressLE { get; set; }
-        public abstract uint AddressBE { get; set; }
-        public abstract string AddressHexLE { get; set; }
-        public abstract string AddressHexBE { get; set; }
+        public abstract Buint AddressBE { get; set; }
+        public abstract HexString AddressHexLE { get; set; }
+        public abstract HexString AddressHexBE { get; set; }
     }
 
 
@@ -93,7 +142,7 @@ namespace RidersGearEditor.Types
         public byte ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
         public byte ValueBE { get => value; set => this.value = value; }
-        public uint OffsetBE { get => SwapEndian(offset); set => offset = SwapEndian(value); }
+        public Buint OffsetBE { get => offset.SwapEndian(); set => offset = SwapEndian(value); }
         public string ValueHexLE { get => ToHex(value); set => this.value = HexToByte(value); }
         public string ValueHexBE { get => ToHex(value); set => this.value = HexToByte(value); }
         public string OffsetHexLE { get => ToHex(offset); set => offset = HexToUInt32(value); }
@@ -245,8 +294,27 @@ namespace RidersGearEditor.Types
                 this.offset = offset;
         }
 
+        public FloatValueOffsetPair(uint offset, float value, bool bigEndian = true)
+        {
+            this.value = value;
+            if (bigEndian)
+                this.offset = SwapEndian(offset);
+            else
+                this.offset = offset;
+        }
+
         public void MakeAdressAbsolute(uint baseAdress) => OffsetLE += baseAdress;
         public IValueAddressPair<float> ToAbsoluteAdress(uint baseAdress) => new FloatValAddrPair(baseAdress, this);
+
+        public bool TrySetValue(string str) 
+        {
+            if (float.TryParse(str, out var res))
+            {
+                value = res;
+                return true;
+            }
+            return false;
+        }
 
         public bool ParseRestricions()
         {
@@ -290,6 +358,27 @@ namespace RidersGearEditor.Types
         {
             pair = new FloatValueOffsetPair(absoluteAdress);
         }
+
+        public HexString GetValue() => pair.ValueHexBE;
+        public HexString GetAdress() => pair.OffsetHexBE;
+
+        public bool TrySetValue(string value)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string GetGeckoCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] GetValueBytes()
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] GetAddressBytes() => throw new NotImplementedException();
+        public void SetValue(HexString str) => pair.ValueHexBE = str;
     }
     #endregion
 }

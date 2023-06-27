@@ -25,11 +25,36 @@ namespace RidersGearEditor
             return fields;
         }
 
+        public static Dictionary<string, IGeckoParsable> GetFieldsGecko(IDataStruct data)
+        {
+            var fields = new Dictionary<string, IGeckoParsable>();
+            var info = data.GetType().GetFields();
+            foreach (var field in info)
+            {
+                
+                if (field.GetValue(data) is IGeckoParsable)
+                {
+                    fields.Add(field.Name, (IGeckoParsable)field.GetValue(data));
+                }
+            }
+            return fields;
+        }
+
+        public static void MakeAdressesAbsolute(IDataStruct data, uint baseAdress)
+        {
+
+        }
+
         public static void Main()
         {
             var tmp = GetFields(new ExtremeGear(GearAdress.HighBooster).gearStats);
             Console.WriteLine("ja moin");
         }
+    }
+
+    public class DataStruct : IDataStruct
+    {
+
     }
 
     public class ExtremeGear

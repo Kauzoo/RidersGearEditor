@@ -29,6 +29,11 @@ namespace RidersGearEditor
             return $"04{valueAdressPair.OffsetHexLE[2..]} {valueAdressPair.ValueHexBE}";
         }
 
+        public static string BitsWrite32(IGeckoParsable valueAdressPair)
+        {
+            return $"{valueAdressPair.GetAdress().Value[2..]} {valueAdressPair.GetValue()}"; 
+        }
+
 
         /*public static void Main()
         {

@@ -11,7 +11,7 @@ public static class RCMUtils
     public static short SwapEndian(short number) => BitConverter.ToInt16(BitConverter.GetBytes(number).Reverse().ToArray());
     public static ushort SwapEndian(ushort number) => BitConverter.ToUInt16(BitConverter.GetBytes(number).Reverse().ToArray());
     public static int SwapEndian(int number) => BitConverter.ToInt32(BitConverter.GetBytes(number).Reverse().ToArray());
-    public static uint SwapEndian(uint number) => BitConverter.ToUInt32(BitConverter.GetBytes(number).Reverse().ToArray());
+    public static uint SwapEndian(this uint number) => BitConverter.ToUInt32(BitConverter.GetBytes(number).Reverse().ToArray());
     public static long SwapEndian(long number) => BitConverter.ToInt64(BitConverter.GetBytes(number).Reverse().ToArray());
     public static ulong SwapEndian(ulong number) => BitConverter.ToUInt64(BitConverter.GetBytes(number).Reverse().ToArray());
     public static float SwapEndian(float number) => BitConverter.ToSingle(BitConverter.GetBytes(number).Reverse().ToArray());
