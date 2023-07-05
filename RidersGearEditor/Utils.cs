@@ -29,14 +29,17 @@ public static class RCMUtils
 
     public static uint ToUInt32(this byte[] bytes, int startIndex = 0, bool swapEndian = false) => (swapEndian) ? BitConverter.ToUInt32(bytes, startIndex) : BitConverter.ToUInt32(bytes.SwapEndian(), startIndex);
 
+    // Little Endian
     public static string ToHex(short number) => Convert.ToHexString(BitConverter.GetBytes(number));
     public static string ToHex(ushort number) => Convert.ToHexString(BitConverter.GetBytes(number));
     public static string ToHex(int number) => Convert.ToHexString(BitConverter.GetBytes(number));
     public static string ToHex(this uint number, bool swapEndian = false) => (!swapEndian) ? Convert.ToHexString(BitConverter.GetBytes(number)) : Convert.ToHexString(BitConverter.GetBytes(number).Reverse().ToArray());
     public static string ToHex(long number) => Convert.ToHexString(BitConverter.GetBytes(number));
+    
     public static string ToHex(ulong number) => Convert.ToHexString(BitConverter.GetBytes(number));
     public static string ToHex(float number) => Convert.ToHexString(BitConverter.GetBytes(number));
     public static string ToHex(double number) => Convert.ToHexString(BitConverter.GetBytes(number));
+
 
     public static byte HexToByte(string hex) => Convert.FromHexString(hex)[0];
     public static sbyte HexToSByte(string hex) => (sbyte) (Convert.FromHexString(hex)[0]);  // TODO idk if this actually works

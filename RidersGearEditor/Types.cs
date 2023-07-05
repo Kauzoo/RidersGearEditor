@@ -74,6 +74,7 @@ namespace RidersGearEditor.Types
         public static implicit operator string(HexString str) => str.val;
         public static explicit operator HexString(HexStringBE str) => new HexString(str.Bytes.Reverse().ToArray());
         public static explicit operator HexStringBE(HexString str) => new HexStringBE(str.Bytes.Reverse().ToArray());
+        public static explicit operator uint(HexString str) => BitConverter.ToUInt32(Convert.FromHexString(str.val));
     }
 
     public struct HexStringBE : IHexString
@@ -107,46 +108,46 @@ namespace RidersGearEditor.Types
         
     }
 
-    public interface IValueMemoryPair<T>
+    public interface IValueMemoryPair<T, V>
     {
         public abstract T ValueLE { get; set; }
-        public abstract T ValueBE { get; set; }
+        public abstract V ValueBE { get; set; }
         public abstract HexString ValueHexLE { get; set; }
-        public abstract HexString ValueHexBE { get; set; }
+        public abstract HexStringBE ValueHexBE { get; set; }
     }
 
-    public interface IValueOffsetPair<T> : IValueMemoryPair<T>
+    public interface IValueOffsetPair<T, V> : IValueMemoryPair<T, V>
     {
         public abstract uint OffsetLE { get; set; }
         public abstract Buint OffsetBE { get; set; }
         public abstract HexString OffsetHexLE { get; set; }
-        public abstract HexString OffsetHexBE { get; set; }
+        public abstract HexStringBE OffsetHexBE { get; set; }
 
         void MakeAdressAbsolute(uint baseAdress);
-        IValueAddressPair<T> ToAbsoluteAdress(uint baseAdress);
+        IValueAddressPair<T, V> ToAbsoluteAdress(uint baseAdress);
     }
 
-    public interface IValueAddressPair<T> : IValueMemoryPair<T>, IGeckoParsable
+    public interface IValueAddressPair<T, V> : IValueMemoryPair<T, V>, IGeckoParsable
     {
-        public abstract IValueOffsetPair<T> Pair { get; set; }
+        public abstract IValueOffsetPair<T, V> Pair { get; set; }
         public abstract uint AddressLE { get; set; }
         public abstract Buint AddressBE { get; set; }
         public abstract HexString AddressHexLE { get; set; }
-        public abstract HexString AddressHexBE { get; set; }
+        public abstract HexStringBE AddressHexBE { get; set; }
     }
 
 
 
-    public struct ByteValueOffsetPair : IValueOffsetPair<System.Byte>
+    public struct ByteValueOffsetPair : IValueOffsetPair<System.Byte, System.Byte>
     {
         public byte ValueLE { get => value; set => this.value = value; }
         public uint OffsetLE { get => offset; set => offset = value; }
         public byte ValueBE { get => value; set => this.value = value; }
-        public Buint OffsetBE { get => offset.SwapEndian(); set => offset = SwapEndian(value); }
-        public string ValueHexLE { get => ToHex(value); set => this.value = HexToByte(value); }
-        public string ValueHexBE { get => ToHex(value); set => this.value = HexToByte(value); }
-        public string OffsetHexLE { get => ToHex(offset); set => offset = HexToUInt32(value); }
-        public string OffsetHexBE { get => ToHex(OffsetBE); set => offset = SwapEndian(HexToUInt32(value)); }
+        public Buint OffsetBE { get => (Buint) offset; set => offset = (uint) value; }
+        public HexString ValueHexLE { get => ToHex(value); set => this.value = HexToByte(value); }
+        public HexStringBE ValueHexBE { get => ToHex(value); set => this.value = HexToByte(value); }
+        public HexString OffsetHexLE { get => (HexString) offset; set => offset = HexToUInt32(value); }
+        public HexStringBE OffsetHexBE { get => (OffsetBE).ToHex(); set => offset = SwapEndian(HexToUInt32(value)); }
 
         private byte value;
         private uint offset;
